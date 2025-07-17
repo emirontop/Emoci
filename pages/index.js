@@ -1,79 +1,210 @@
 import React, { useEffect, useRef, useState } from "react";
 
 const eyesOptions = [
-  { label: "Göz 1 👀", shape: "👀" },
-  { label: "Göz 2 😎", shape: "😎" },
-  { label: "Göz 3 🫣", shape: "🫣" },
-  { label: "Göz 4 🤓", shape: "🤓" },
-  { label: "Göz 5 🥸", shape: "🥸" },
+  { label: "Yuvarlak Göz", type: "circle" },
+  { label: "Kare Göz", type: "square" },
+  { label: "Yarım Ay Göz", type: "semiCircle" },
+  { label: "Üzgün Göz", type: "sad" },
 ];
 
 const mouthsOptions = [
-  { label: "Ağız 1 😁", shape: "😁" },
-  { label: "Ağız 2 😡", shape: "😡" },
-  { label: "Ağız 3 😐", shape: "😐" },
-  { label: "Ağız 4 🥶", shape: "🥶" },
-  { label: "Ağız 5 🤩", shape: "🤩" },
+  { label: "Gülümseme", type: "smile" },
+  { label: "Somurtma", type: "frown" },
+  { label: "Düz Çizgi", type: "straight" },
+  { label: "Açık Ağız", type: "open" },
 ];
 
 export default function EmojiMaker() {
   const canvasRef = useRef(null);
-  const [eye, setEye] = useState(eyesOptions[0].shape);
-  const [mouth, setMouth] = useState(mouthsOptions[0].shape);
-  const [bgColor, setBgColor] = useState("#222222");
+  const [eyeType, setEyeType] = useState("circle");
+  const [mouthType, setMouthType] = useState("smile");
+  const [bgColor, setBgColor] = useState("#FFD93B"); // sarı emoji renk
   const [size, setSize] = useState(300);
 
-  // Load from localStorage
+  // LocalStorage yükle
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("emojiData"));
     if (saved) {
-      if (saved.eye) setEye(saved.eye);
-      if (saved.mouth) setMouth(saved.mouth);
+      if (saved.eyeType) setEyeType(saved.eyeType);
+      if (saved.mouthType) setMouthType(saved.mouthType);
       if (saved.bgColor) setBgColor(saved.bgColor);
       if (saved.size) setSize(saved.size);
     }
   }, []);
 
-  // Save to localStorage
+  // LocalStorage kaydet
   useEffect(() => {
     localStorage.setItem(
       "emojiData",
-      JSON.stringify({ eye, mouth, bgColor, size })
+      JSON.stringify({ eyeType, mouthType, bgColor, size })
     );
-  }, [eye, mouth, bgColor, size]);
+  }, [eyeType, mouthType, bgColor, size]);
 
-  // Draw canvas
+  // Canvas çizim fonksiyonları
+  function drawEyes(ctx, canvasSize, type) {
+    const eyeY = canvasSize / 3;
+    const eyeOffsetX = canvasSize / 6;
+    ctx.fillStyle = "white";
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 3;
+
+    // Sol göz
+    ctx.beginPath();
+    if (type === "circle") {
+      ctx.ellipse(
+        canvasSize / 2 - eyeOffsetX,
+        eyeY,
+        30,
+        40,
+        0,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+      ctx.stroke();
+
+      // Pupil
+      ctx.beginPath();
+      ctx.fillStyle = "black";
+      ctx.ellipse(canvasSize / 2 - eyeOffsetX, eyeY, 12, 18, 0, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (type === "square") {
+      ctx.fillRect(canvasSize / 2 - eyeOffsetX - 25, eyeY - 25, 50, 50);
+      ctx.fillStyle = "black";
+      ctx.fillRect(canvasSize / 2 - eyeOffsetX - 12, eyeY - 12, 25, 25);
+    } else if (type === "semiCircle") {
+      ctx.beginPath();
+      ctx.arc(canvasSize / 2 - eyeOffsetX, eyeY + 10, 30, Math.PI, 2 * Math.PI);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.fillStyle = "black";
+      ctx.arc(canvasSize / 2 - eyeOffsetX, eyeY + 10, 12, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (type === "sad") {
+      ctx.beginPath();
+      ctx.ellipse(
+        canvasSize / 2 - eyeOffsetX,
+        eyeY + 10,
+        30,
+        20,
+        Math.PI / 4,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.fillStyle = "black";
+      ctx.ellipse(canvasSize / 2 - eyeOffsetX, eyeY + 10, 12, 10, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    // Sağ göz aynısı
+    ctx.fillStyle = "white";
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+    if (type === "circle") {
+      ctx.ellipse(
+        canvasSize / 2 + eyeOffsetX,
+        eyeY,
+        30,
+        40,
+        0,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+      ctx.stroke();
+
+      // Pupil
+      ctx.beginPath();
+      ctx.fillStyle = "black";
+      ctx.ellipse(canvasSize / 2 + eyeOffsetX, eyeY, 12, 18, 0, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (type === "square") {
+      ctx.fillRect(canvasSize / 2 + eyeOffsetX - 25, eyeY - 25, 50, 50);
+      ctx.fillStyle = "black";
+      ctx.fillRect(canvasSize / 2 + eyeOffsetX - 12, eyeY - 12, 25, 25);
+    } else if (type === "semiCircle") {
+      ctx.beginPath();
+      ctx.arc(canvasSize / 2 + eyeOffsetX, eyeY + 10, 30, Math.PI, 2 * Math.PI);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.fillStyle = "black";
+      ctx.arc(canvasSize / 2 + eyeOffsetX, eyeY + 10, 12, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (type === "sad") {
+      ctx.beginPath();
+      ctx.ellipse(
+        canvasSize / 2 + eyeOffsetX,
+        eyeY + 10,
+        30,
+        20,
+        Math.PI / 4,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.fillStyle = "black";
+      ctx.ellipse(canvasSize / 2 + eyeOffsetX, eyeY + 10, 12, 10, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function drawMouth(ctx, canvasSize, type) {
+    const mouthY = (canvasSize / 3) * 2;
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 5;
+    ctx.lineCap = "round";
+
+    ctx.beginPath();
+    if (type === "smile") {
+      ctx.arc(canvasSize / 2, mouthY, 60, 0, Math.PI, false); // gülümseme
+    } else if (type === "frown") {
+      ctx.arc(canvasSize / 2, mouthY + 50, 60, Math.PI, 0, false); // somurtma
+    } else if (type === "straight") {
+      ctx.moveTo(canvasSize / 2 - 60, mouthY);
+      ctx.lineTo(canvasSize / 2 + 60, mouthY); // düz çizgi
+    } else if (type === "open") {
+      ctx.ellipse(canvasSize / 2, mouthY, 50, 70, 0, 0, Math.PI * 2); // açık ağız
+      ctx.fillStyle = "black";
+      ctx.fill();
+      ctx.stroke();
+      return;
+    }
+    ctx.stroke();
+  }
+
+  // Çizim
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
-    const canvasSize = size;
-    canvas.width = canvasSize;
-    canvas.height = canvasSize;
+    canvas.width = size;
+    canvas.height = size;
 
-    // Clear
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Draw background circle
+    // Arka plan
     ctx.fillStyle = bgColor;
     ctx.beginPath();
-    ctx.arc(canvasSize / 2, canvasSize / 2, canvasSize / 2, 0, Math.PI * 2);
+    ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
     ctx.fill();
 
-    // Setup emoji font size relative
-    const emojiFontSize = canvasSize / 2;
+    // Göz çiz
+    drawEyes(ctx, size, eyeType);
 
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.font = `${emojiFontSize}px serif`;
+    // Ağız çiz
+    drawMouth(ctx, size, mouthType);
+  }, [eyeType, mouthType, bgColor, size]);
 
-    // Draw eyes (upper part)
-    ctx.fillText(eye, canvasSize / 2, canvasSize / 3);
-
-    // Draw mouth (lower part)
-    ctx.fillText(mouth, canvasSize / 2, (canvasSize / 3) * 2);
-  }, [eye, mouth, bgColor, size]);
-
-  // Copy canvas as PNG to clipboard
+  // Kopyala - canvas PNG olarak
   async function copyCanvasImage() {
     const canvas = canvasRef.current;
     canvas.toBlob(async (blob) => {
@@ -84,7 +215,7 @@ export default function EmojiMaker() {
           }),
         ]);
         alert("Emoji resmi kopyalandı! İstersen yapıştır.");
-      } catch (e) {
+      } catch {
         alert("Kopyalama başarısız, tarayıcı desteklemiyor olabilir.");
       }
     });
@@ -103,7 +234,7 @@ export default function EmojiMaker() {
         fontFamily: "Arial, sans-serif",
       }}
     >
-      <h1 style={{ marginBottom: 10 }}>Kendi Emojini Yap</h1>
+      <h1 style={{ marginBottom: 10 }}>Kendi Emojini Çiz</h1>
 
       <canvas
         ref={canvasRef}
@@ -118,14 +249,14 @@ export default function EmojiMaker() {
 
       <div style={{ marginBottom: 10 }}>
         <label>
-          Göz:
+          Göz Seç:
           <select
-            value={eye}
-            onChange={(e) => setEye(e.target.value)}
+            value={eyeType}
+            onChange={(e) => setEyeType(e.target.value)}
             style={{ marginLeft: 10, padding: 5, fontSize: 16 }}
           >
-            {eyesOptions.map(({ label, shape }) => (
-              <option key={shape} value={shape}>
+            {eyesOptions.map(({ label, type }) => (
+              <option key={type} value={type}>
                 {label}
               </option>
             ))}
@@ -135,14 +266,14 @@ export default function EmojiMaker() {
 
       <div style={{ marginBottom: 10 }}>
         <label>
-          Ağız:
+          Ağız Seç:
           <select
-            value={mouth}
-            onChange={(e) => setMouth(e.target.value)}
+            value={mouthType}
+            onChange={(e) => setMouthType(e.target.value)}
             style={{ marginLeft: 10, padding: 5, fontSize: 16 }}
           >
-            {mouthsOptions.map(({ label, shape }) => (
-              <option key={shape} value={shape}>
+            {mouthsOptions.map(({ label, type }) => (
+              <option key={type} value={type}>
                 {label}
               </option>
             ))}
