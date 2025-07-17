@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import "../styles/globals.css";
 
 export default function Home() {
   const [eye, setEye] = useState("👀");
@@ -90,4 +89,4 @@ export default function Home() {
       <button onClick={copyEmoji}>Kopyala</button>
     </div>
   );
-    }
+}
