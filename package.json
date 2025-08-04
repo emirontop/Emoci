@@ -1,0 +1,10 @@
+{
+  "name": "get-key-project",
+  "version": "1.0.0",
+  "description": "Simple key generation system for Emocii Hub",
+  "main": "index.js",
+  "scripts": {
+    "start": "vercel dev"
+  },
+  "dependencies": {}
+}
