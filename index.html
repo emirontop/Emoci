@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Emocii Hub - Get Key</title>
+  <link rel="stylesheet" href="public/style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>🎟️ Emocii Hub - Get Your Access Key</h1>
+    <button id="getKeyBtn">Get Key</button>
+
+    <div id="keyDisplay" style="margin-top: 20px;"></div>
+    <div id="expiryDisplay" style="margin-top: 10px; color: gray;"></div>
+  </div>
+
+  <script>
+    document.getElementById("getKeyBtn").onclick = async function() {
+      const res = await fetch("/api/generate-key");
+      const data = await res.json();
+      document.getElementById("keyDisplay").innerText = "Your Key: " + data.key;
+      document.getElementById("expiryDisplay").innerText = "Expires at: " + new Date(data.expiresAt).toLocaleTimeString();
+      navigator.clipboard.writeText(data.key);
+      alert("Key copied to clipboard!");
+    };
+  </script>
+</body>
+</html>
