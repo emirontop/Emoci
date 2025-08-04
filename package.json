@@ -1,9 +1,15 @@
 {
-  "name": "get-key-project",
+  "name": "emocii-hub",
   "version": "1.0.0",
-  "description": "Simple key generation system for Emocii Hub",
   "scripts": {
-    "start": "vercel dev"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
-  "dependencies": {}
+  "dependencies": {
+    "next": "13.4.4",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "micro": "^10.0.0"
+  }
 }
